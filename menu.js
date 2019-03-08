@@ -533,18 +533,39 @@ var RevealMenu = window.RevealMenu || (function(){
 					//
 					// Slide links
 					//
-					function generateItem(type, section, i, h, v) {
+					function generateItem(type, section, i, h, v, subsectionsCount) {
 						var link = '/#/' + h;
 						if (typeof v === 'number' && !isNaN( v )) link += '/' + v;
 
 						function text(selector, parent) {
 							var el = (parent ? select(selector, section) : select(selector));
-							if (el) return el.textContent;
+							if (el) {
+                                if (el.childNodes.length >= 2 && el.childNodes[0].className == 'header-section-number') {
+                                    return el.childNodes[1].textContent.trim();
+                                }
+                                return el.textContent;
+                            }
 							return null;
 						}
+
+                        function sectionNumber(selector, parent) {
+							var el = (parent ? select(selector, section) : select(selector));
+							if (el) {
+                                if (el.childNodes.length >= 2 && el.childNodes[0].className == 'header-section-number') {
+                                    return el.childNodes[0].textContent.trim();
+                                }
+                                return el.textContent;
+                            }
+							return null;
+						}
+
 						var title = section.getAttribute('data-menu-title') ||
 							text('.menu-title', section) ||
 							text(titleSelector, section);
+
+						var sectionNumber = section.getAttribute('data-menu-title') ||
+							sectionNumber('.menu-title', section) ||
+							sectionNumber(titleSelector, section);
 
 						if (!title && useTextContentForMissingTitles) {
 							// attempt to figure out a title based on the text in the slide
@@ -606,15 +627,21 @@ var RevealMenu = window.RevealMenu || (function(){
 									if( typeof v === 'number' && !isNaN( v ) ) value.push( '/', v + 1 );
 									break;
 								default:
-									value.push( h );
-									if( typeof v === 'number' && !isNaN( v ) ) value.push( '.', v + 1 );
+									if (typeof v === 'number' && !isNaN(v) && v < 1) {
+                                        value.push( h );
+                                    } else {
+                                        value.push( h );
+                                        if (typeof subsectionsCount === 'number' && !isNaN(subsectionsCount)) {
+                                            value.push ('.', subsectionsCount);
+                                        }
+                                    }
 							}
 
-							item.appendChild(create('span', {class: 'slide-menu-item-number'}, value.join('') + '. '));
+							item.appendChild(create('span', {class: 'slide-menu-item-number'}, value.join('') + '.'));
 						}
 
 						item.appendChild(create('span', {class: 'slide-menu-item-title'}, title));
-						
+
 						return item;
 					}
 
@@ -630,12 +657,14 @@ var RevealMenu = window.RevealMenu || (function(){
 							var slideCount = 0;
 							selectAll('.slides > section').forEach(function(section, h) {
 								var subsections = selectAll('section', section);
+                                var subsectionsCount = 0;
 								if (subsections.length > 0) {
 									subsections.forEach(function(subsection, v) {
 										var type = (v === 0 ? 'slide-menu-item' : 'slide-menu-item-vertical');
-										var item = generateItem(type, subsection, slideCount, h, v);
+										var item = generateItem(type, subsection, slideCount, h, v, subsectionsCount);
 										if (item) {
 											slideCount++;
+                                            subsectionsCount++;
 											items.appendChild(item);
 										}
 									});
