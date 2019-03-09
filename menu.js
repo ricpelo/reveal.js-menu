@@ -540,8 +540,10 @@ var RevealMenu = window.RevealMenu || (function(){
 						function text(selector, parent) {
 							var el = (parent ? select(selector, section) : select(selector));
 							if (el) {
-                                if (el.childNodes.length >= 2 && el.childNodes[0].className == 'header-section-number') {
-                                    return el.childNodes[1].textContent.trim();
+                                if (el.childNodes.length >= 2 && el.firstChild.className == 'header-section-number') {
+                                    var tmp = el.cloneNode(true);
+                                    tmp.removeChild(tmp.firstChild);
+                                    return tmp.textContent.trim();
                                 }
                                 return el.textContent;
                             }
@@ -551,8 +553,8 @@ var RevealMenu = window.RevealMenu || (function(){
                         function sectionNumber(selector, parent) {
 							var el = (parent ? select(selector, section) : select(selector));
 							if (el) {
-                                if (el.childNodes.length >= 2 && el.childNodes[0].className == 'header-section-number') {
-                                    return el.childNodes[0].textContent.trim();
+                                if (el.childNodes.length >= 2 && el.firstChild.className == 'header-section-number') {
+                                    return el.firstChild.textContent.trim();
                                 }
                                 return el.textContent;
                             }
