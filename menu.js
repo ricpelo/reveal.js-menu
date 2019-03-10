@@ -533,7 +533,7 @@ var RevealMenu = window.RevealMenu || (function(){
 					//
 					// Slide links
 					//
-					function generateItem(type, section, i, h, v, subsectionsCount) {
+					function generateItem(type, section, i, h, v) {
 						var link = '/#/' + h;
 						if (typeof v === 'number' && !isNaN( v )) link += '/' + v;
 
@@ -632,10 +632,7 @@ var RevealMenu = window.RevealMenu || (function(){
 									if (typeof v === 'number' && !isNaN(v) && v < 1) {
                                         value.push( h );
                                     } else {
-                                        value.push( h );
-                                        if (typeof subsectionsCount === 'number' && !isNaN(subsectionsCount)) {
-                                            value.push ('.', subsectionsCount);
-                                        }
+                                        value.push (sectionNumber);
                                     }
 							}
 
@@ -659,14 +656,15 @@ var RevealMenu = window.RevealMenu || (function(){
 							var slideCount = 0;
 							selectAll('.slides > section').forEach(function(section, h) {
 								var subsections = selectAll('section', section);
-                                var subsectionsCount = 0;
 								if (subsections.length > 0) {
 									subsections.forEach(function(subsection, v) {
+                                        if (subsection.classList.contains('level3')) {
+                                            return;
+                                        }
 										var type = (v === 0 ? 'slide-menu-item' : 'slide-menu-item-vertical');
-										var item = generateItem(type, subsection, slideCount, h, v, subsectionsCount);
+										var item = generateItem(type, subsection, slideCount, h, v);
 										if (item) {
 											slideCount++;
-                                            subsectionsCount++;
 											items.appendChild(item);
 										}
 									});
