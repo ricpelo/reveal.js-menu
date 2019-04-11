@@ -554,6 +554,7 @@ var RevealMenu = window.RevealMenu || (function(){
 							var el = (parent ? select(selector, section) : select(selector));
 							if (el) {
                                 if (el.childNodes.length >= 2 && el.firstChild.className == 'header-section-number') {
+                                    console.log(el);
                                     return el.firstChild.textContent.trim();
                                 }
                                 return el.textContent;
@@ -658,7 +659,8 @@ var RevealMenu = window.RevealMenu || (function(){
 								var subsections = selectAll('section', section);
 								if (subsections.length > 0) {
 									subsections.forEach(function(subsection, v) {
-                                        if (subsection.classList.contains('level3')) {
+                                        var cl = subsection.classList;
+                                        if (cl.contains('level3') || cl.contains('level4')) {
                                             return;
                                         }
 										var type = (v === 0 ? 'slide-menu-item' : 'slide-menu-item-vertical');
