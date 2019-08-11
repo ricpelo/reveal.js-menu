@@ -554,7 +554,6 @@ var RevealMenu = window.RevealMenu || (function(){
 							var el = (parent ? select(selector, section) : select(selector));
 							if (el) {
                                 if (el.childNodes.length >= 2 && el.firstChild.className == 'header-section-number') {
-                                    console.log(el);
                                     return el.firstChild.textContent.trim();
                                 }
                                 return el.textContent;
